@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // 定义四个键位的枚举
+      const keyEnum = {
+        W: false,
+        A: false,
+        S: false,
+        D: false,
+      };
+
+      // 监听键盘按下
+      document.addEventListener('keydown', (e) => {
+        switch (e.key.toUpperCase()) {
+          case 'W':
+            keyEnum.W = true;
+            console.log('W按下');
+            break;
+          case 'A':
+            keyEnum.A = true;
+            console.log('A按下');
+            break;
+          case 'S':
+            keyEnum.S = true;
+            console.log('S按下');
+            break;
+          case 'D':
+            keyEnum.D = true;
+            console.log('D按下');
+            break;
+        }
+      });
+
+      // 监听键盘抬起
+      document.addEventListener('keyup', (e) => {
+        switch (e.key.toUpperCase()) {
+          case 'W':
+            keyEnum.W = false;
+            console.log('W松开');
+            break;
+          case 'A':
+            keyEnum.A = false;
+            console.log('A松开');
+            break;
+          case 'S':
+            keyEnum.S = false;
+            console.log('S松开');
+            break;
+          case 'D':
+            keyEnum.D = false;
+            console.log('D松开');
+            break;
+        }
+      });
+
+      // 模拟threejs中的render
+      const render = () => {
+        window.requestAnimationFrame(render);
+      };
+
+      render();
+    </script>
+  </body>
+</html>
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+  }
+</style>
