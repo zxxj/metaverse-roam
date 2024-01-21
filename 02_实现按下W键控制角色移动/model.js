@@ -1,32 +1,26 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-const model = new THREE.Group();
-
 const loader = new GLTFLoader();
-loader.load('../人.glb', (gltf) => {
-  console.log(gltf);
-  model.add(gltf.scene);
+const group = new THREE.Group();
 
-  // 骨骼辅助显示
-  const skeletonHelper = new THREE.SkeletonHelper(gltf.scene);
-  model.add(skeletonHelper);
+let gltf = null;
+let player = null;
 
-  // 实现骨骼动画
-  const mixer = new THREE.AnimationMixer(gltf.scene);
-  gltf.animations[0]; // 走路
-  const clipAction = mixer.clipAction(gltf.animations[0]);
-  clipAction.play(); // 播放动画
+try {
+  gltf = await loader.loadAsync('../人.glb');
+  player = gltf.scene; // 玩家角色模型
+  group.add(player);
+} catch (error) {
+  console.log(error);
+}
 
-  // 动画循环
-  const clock = new THREE.Clock();
+// 包含关键帧动画的模型作为参数创建一个播放器
+const mixer = new THREE.AnimationMixer(gltf.scene);
+console.log('gltf.animations', gltf.animations);
 
-  const loop = () => {
-    window.requestAnimationFrame(loop);
-    const time = clock.getDelta();
-    mixer.update(time);
-  };
-  loop();
-});
+// gltf.animations中有各个动作,选择其中的步行动作
+const clipAction = mixer.clipAction(gltf.animations[13]);
+clipAction.play(); // 播放动画
 
-export { model };
+export { group, player, mixer };

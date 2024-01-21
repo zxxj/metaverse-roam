@@ -1,11 +1,19 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { model } from './model.js';
+import { group, player, mixer } from './model.js';
+
+// 定义四个键位的枚举
+const keyEnum = {
+  W: false,
+  A: false,
+  S: false,
+  D: false,
+};
 
 // 场景
 const scene = new THREE.Scene();
 // 将模型添加到场景中
-scene.add(model);
+scene.add(group);
 
 // 相机
 const camera = new THREE.PerspectiveCamera(
@@ -31,7 +39,20 @@ renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 
 // 渲染循环
+
+const clock = new THREE.Clock();
+// 用三维向量表示玩家角色运动漫游的速度
+const v = new THREE.Vector3(0, 0, 3); // 按下w键对应人运动速度
+
 const render = () => {
+  const deltaTime = clock.getDelta();
+
+  if (keyEnum.W) {
+    const deltaTimePosition = v.clone().multiplyScalar(deltaTime);
+    player.position.add(deltaTimePosition);
+  }
+
+  mixer.update(deltaTime); // 更新播放器相关时间
   renderer.render(scene, camera);
   window.requestAnimationFrame(render);
 };
@@ -57,3 +78,47 @@ window.onresize = () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
 };
+
+// 监听键盘按下
+window.addEventListener('keydown', (e) => {
+  switch (e.key.toUpperCase()) {
+    case 'W':
+      keyEnum.W = true;
+      console.log('W按下');
+      break;
+    case 'A':
+      keyEnum.A = true;
+      console.log('A按下');
+      break;
+    case 'S':
+      keyEnum.S = true;
+      console.log('S按下');
+      break;
+    case 'D':
+      keyEnum.D = true;
+      console.log('D按下');
+      break;
+  }
+});
+
+// 监听键盘抬起
+document.addEventListener('keyup', (e) => {
+  switch (e.key.toUpperCase()) {
+    case 'W':
+      keyEnum.W = false;
+      console.log('W松开');
+      break;
+    case 'A':
+      keyEnum.A = false;
+      console.log('A松开');
+      break;
+    case 'S':
+      keyEnum.S = false;
+      console.log('S松开');
+      break;
+    case 'D':
+      keyEnum.D = false;
+      console.log('D松开');
+      break;
+  }
+});
