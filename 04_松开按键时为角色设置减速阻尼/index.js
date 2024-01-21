@@ -45,14 +45,15 @@ const clock = new THREE.Clock();
 const v = new THREE.Vector3(0, 0, 0); // 初始速度设置为0
 const a = 12; // 加速度: 调节按键加速的快慢
 const maxV = 5; // 限制玩家角色的最高速度
+const damping = -0.04; //  阻尼,当没有WASD加速的时候角色慢慢减速停下来
 
 const render = () => {
   const deltaTime = clock.getDelta();
 
-  if (keyEnum.W) {
-    // 在间隔deltaTime时间内,玩家角色位移变化的计算(速度 * 时间)
-    const deltaTimePosition = v.clone().multiplyScalar(deltaTime);
+  // 在间隔deltaTime时间内,玩家角色位移变化的计算(速度 * 时间)
+  const deltaTimePosition = v.clone().multiplyScalar(deltaTime);
 
+  if (keyEnum.W) {
     // 先假设W键对应的运动方向为Z轴
     const front = new THREE.Vector3(0, 0, 1);
 
@@ -61,10 +62,13 @@ const render = () => {
       // W键按下时,速度随着时间增加
       v.add(front.multiplyScalar(a * deltaTime));
     }
-
-    // 更新角色玩家的位置
-    player.position.add(deltaTimePosition);
   }
+
+  // 阻尼减速
+  v.addScaledVector(v, damping);
+
+  // 更新角色玩家的位置
+  player.position.add(deltaTimePosition);
 
   mixer.update(deltaTime); // 更新播放器相关时间
   renderer.render(scene, camera);
